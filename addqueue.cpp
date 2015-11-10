@@ -1,4 +1,3 @@
-#include <fstream>
 #include <iostream>
 #include "addqueue.h"
 #include "queuehelper.h"
@@ -12,6 +11,7 @@ int copyfile(std::string src, std::string dest){
 
 int validatefile(std::string name){
 
+    return 0;
 
 }
 
@@ -21,7 +21,7 @@ int drop_priv_temp(uid_t new_uid){
     //}
     //if(geteuid() != new_uid)
     //    return ERROR_SYSCALL;
-    //return 0;
+    return 0;
 
 }
 
