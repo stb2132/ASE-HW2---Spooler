@@ -1,12 +1,14 @@
 #define BOOST_NO_CXX11_SCOPED_ENUMS
 #include <boost/filesystem.hpp>
 #undef BOOST_NO_CXX11_SCOPED_ENUMS
+
 #include <string>
 #include <iostream>
 #include <ctime>
 #include <map>
 
 #define TIME_FORMAT "%Y-%m-%d_%H:%M:%S"
+#define metadata "Metadata.txt"
 
 namespace fs = boost::filesystem;
 typedef std::multimap<std::time_t, fs::path> result_map;

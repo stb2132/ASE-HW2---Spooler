@@ -2,7 +2,6 @@
 #include "addqueue.h"
 #include "queuehelper.h"
 
-
 int validate_file(fs::path p){
     try{
         if(fs::exists(p)){
@@ -21,23 +20,27 @@ int main(int argc, char *argv[]){
     if(argc < 2){
       std::cout << "Please run the command as '$ addqueue <arguments>'." << std::endl;
     } else{
-
+     
       //Do not want to copy the executable with arguments, so argv+1
-      std::vector<std::string> files(argv+1, argv + argc);
-
+      std::vector<std::string> fpaths(argv+1, argv + argc);
+      int mcode;
+      std::string slash = "/";
       //Main body of work. Here we will validate files, create new names, and move the files
-      for(std::vector<std::string>::iterator it = files.begin(); it != files.end(); ++it){
+      for(std::vector<std::string>::iterator it = fpaths.begin(); it != fpaths.end(); ++it){
 	  fs::path p (*it);
-          if(validate_file(p) == 0){
-              fs::copy_file(p, SPOOL); 
-              std::cout << *it << std::endl;
+          if((mcode = validate_file(p)) == 0){
+    	      try{
+	          std::string dest = SPOOL + slash + p.filename().string(); 
+                  fs::copy_file(p, dest); 
+                  std::cout << *it << std::endl;
+              } catch (const fs::filesystem_error& ex){
+                  std::cout << p.filename().string() << " X " << ex.m_error_code << '\n';
+              }
           } else {
-
+              //print_error_message(mcode);
           }
       }
     }
-
-    //list_dir("test");
 
     return 0;
 
