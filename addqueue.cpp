@@ -3,26 +3,17 @@
 #include "queuehelper.h"
 
 
-int copyfile(std::string src, std::string dest){
-
-
-    return 0;
-}
-
-int validatefile(std::string name){
-
-    return 0;
-
-}
-
-int drop_priv_temp(uid_t new_uid){
-    //if(setresuid(-1, new_uid, geteuid()) < 0){
-    //    return ERROR_SYSCALL;
-    //}
-    //if(geteuid() != new_uid)
-    //    return ERROR_SYSCALL;
-    return 0;
-
+int validate_file(fs::path p){
+    try{
+        if(fs::exists(p)){
+            if(fs::is_regular_file(p)){
+                return 0; 
+	    }
+	}
+    } catch (const fs::filesystem_error& ex){
+        std::cout << ex.what() << '\n';
+    }
+    return 1;
 }
 
 int main(int argc, char *argv[]){
@@ -36,11 +27,17 @@ int main(int argc, char *argv[]){
 
       //Main body of work. Here we will validate files, create new names, and move the files
       for(std::vector<std::string>::iterator it = files.begin(); it != files.end(); ++it){
-          std::cout << *it<<std::endl;
+	  fs::path p (*it);
+          if(validate_file(p) == 0){
+              fs::copy_file(p, SPOOL); 
+              std::cout << *it << std::endl;
+          } else {
+
+          }
       }
     }
 
-    list_dir("test");
+    //list_dir("test");
 
     return 0;
 
