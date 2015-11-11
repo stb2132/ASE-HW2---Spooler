@@ -1,7 +1,6 @@
-#include <string>
 #include <fstream>
 #include <sstream>
-#include "queuehelper.h"
+#include "spool_helper.h"
 
 #define METADATA "/spool/meta"
 

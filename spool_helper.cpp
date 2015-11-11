@@ -1,20 +1,6 @@
-#define BOOST_NO_CXX11_SCOPED_ENUMS
-#include <boost/filesystem.hpp>
-#undef BOOST_NO_CXX11_SCOPED_ENUMS
+#include "spool_helper.h"
 
-#include <string>
-#include <iostream>
-#include <ctime>
-#include <map>
-#include <unistd.h>
-#include <errno.h>
-
-#define TIME_FORMAT "%Y-%m-%d_%H:%M:%S"
-
-namespace fs = boost::filesystem;
-typedef std::multimap<std::time_t, fs::path> result_map;
-
-int drop_priv_temp(uid_t new_uid){
+int sHelper::drop_priv_temp(uid_t new_uid){
     if(setresuid(-1, new_uid, geteuid()) < 0)
         return errno;
     if(geteuid() != new_uid)
@@ -22,7 +8,7 @@ int drop_priv_temp(uid_t new_uid){
     return 0;
 }
 
-int restore_priv(){
+int sHelper::restore_priv(){
     uid_t ruid, euid, suid;
     if(getresuid(&ruid, &euid, &suid) < 0)
         return errno;
@@ -33,7 +19,8 @@ int restore_priv(){
     return 0;
 }
 
-std::string format_time(std::string format, time_t time){
+
+std::string sHelper::format_time(std::string format, time_t time){
     struct tm *info;
     info = localtime(&time);
     std::string buf;
@@ -48,17 +35,7 @@ std::string format_time(std::string format, time_t time){
     return buf;
 }
 
-//This gets the path/time of creation for a given directory
-void fill_directory_map(fs::path dir_path, result_map &map){
-    fs::directory_iterator end_iter;
-
-    for(fs::directory_iterator dir_iter(dir_path); dir_iter != end_iter ; ++dir_iter){
-        if(fs::is_regular_file(dir_iter->status()) ){
-            map.insert(result_map::value_type(fs::last_write_time(dir_iter->path()), *dir_iter)); 
-        }
-    }
-}
-int validate_file(fs::path p){
+int sHelper::validate_file(fs::path p){
     try{
         if(fs::exists(p)){
             if(fs::is_regular_file(p)){
@@ -71,8 +48,18 @@ int validate_file(fs::path p){
     return 1;
 }
 
+//This gets the path/time of creation for a given directory
+void sHelper::fill_directory_map(fs::path dir_path, result_map &map){
+    fs::directory_iterator end_iter;
 
-int list_dir(std::string src){
+    for(fs::directory_iterator dir_iter(dir_path); dir_iter != end_iter ; ++dir_iter){
+        if(fs::is_regular_file(dir_iter->status()) ){
+            map.insert(result_map::value_type(fs::last_write_time(dir_iter->path()), *dir_iter)); 
+        }
+    }
+}
+
+int sHelper::list_dir(std::string src){
     result_map map;
     fs::path p (src);
     std::time_t last_write;
@@ -87,7 +74,6 @@ int list_dir(std::string src){
                 }
 	    }
         }
-
     } catch(const fs::filesystem_error& ex){
         std::cout << ex.what() << '\n';
     }
