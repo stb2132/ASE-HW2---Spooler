@@ -1,11 +1,16 @@
-OBJ=addqueue showqueue rmqueue
+COMMANDS=addqueue showqueue rmqueue
+BUILD=$(COMMANDS) install
+
 CXX=clang++
 STDFLAG=-std=c++11
 CXXFLAGS=$(STDFLAG) -lboost_system -lboost_filesystem
 
 build: queue_commands 
 
-queue_commands: $(OBJ)
+queue_commands: $(BUILD)
+
+install:
+	./install.sh $(COMMANDS) 
 
 addqueue: addqueue.o spool_helper.o 
 	$(CXX) $(CXXFLAGS) -o $@ addqueue.o spool_helper.o
@@ -30,9 +35,6 @@ spool_helper.o: spool_helper.cpp spool_helper.h
 
 test: build
 	./acl_main < first_test.txt
-
-exec: build
-	./acl_main $(ARG)
 
 clean:
 	rm -f acl_main *.o *.h~ *.cpp~
