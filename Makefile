@@ -46,4 +46,3 @@ test:
 
 clean:
 	rm -f acl_main *.o *.h~ *.cpp~
-	rm 1 2 3 4 5 6
