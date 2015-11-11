@@ -32,11 +32,10 @@ class sHelper{
         bool validate_file(fs::path p);
         std::string extract_number(std::string name);
         void read_meta_file();
-	std::string get_next_id(){return std::to_string(this->id++);}
-        void decrement_id(){this->id--;}
         uid_t get_file_owner(std::string filepath);
         void write_last_id();
        
+	std::string get_next_id(){return std::to_string(this->id++);}
     private:
         int id;
         uid_t p_runner;
