@@ -33,13 +33,17 @@ rmqueue.o: rmqueue.cpp spool_helper.h
 spool_helper.o: spool_helper.cpp spool_helper.h
 	$(CXX) $(STDFLAG) -c spool_helper.cpp
 
-test: build
+test: 
 	touch 1 2 3 4 5 6
 	showqueue
 	addqueue 1 2 3
 	showqueue
 	rmqueue 2
 	showqueue
+	showqueue 2
+	rmqueue a
+	addqueue b
 
 clean:
 	rm -f acl_main *.o *.h~ *.cpp~
+	rm 1 2 3 4 5 6
