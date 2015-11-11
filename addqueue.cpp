@@ -16,11 +16,13 @@ int validate_file(fs::path p){
 }
 
 int main(int argc, char *argv[]){
+    
+    uid_t p_runner = getuid();
+    drop_priv_temp(p_runner);
 
     if(argc < 2){
       std::cout << "Please run the command as '$ addqueue <arguments>'." << std::endl;
     } else{
-     
       //Do not want to copy the executable with arguments, so argv+1
       std::vector<std::string> fpaths(argv+1, argv + argc);
       int mcode;
@@ -34,7 +36,7 @@ int main(int argc, char *argv[]){
                   fs::copy_file(p, dest); 
                   std::cout << *it << std::endl;
               } catch (const fs::filesystem_error& ex){
-                  std::cout << p.filename().string() << " X " << ex.m_error_code << '\n';
+//                  std::cout << p.filename().string() << " X " << ex.m_error_code << '\n';
               }
           } else {
               //print_error_message(mcode);

@@ -6,12 +6,32 @@
 #include <iostream>
 #include <ctime>
 #include <map>
+#include <unistd.h>
+#include <errno.h>
 
 #define TIME_FORMAT "%Y-%m-%d_%H:%M:%S"
-#define metadata "Metadata.txt"
 
 namespace fs = boost::filesystem;
 typedef std::multimap<std::time_t, fs::path> result_map;
+
+int drop_priv_temp(uid_t new_uid){
+    if(setresuid(-1, new_uid, geteuid()) < 0)
+        return errno;
+    if(geteuid() != new_uid)
+        return errno;
+    return 0;
+}
+
+int restore_priv(){
+    uid_t ruid, euid, suid;
+    if(getresuid(&ruid, &euid, &suid) < 0)
+        return errno;
+    if(setresuid(-1, suid, -1) < 0)
+        return errno;
+    if(geteuid() != suid)
+        return errno;
+    return 0;
+}
 
 std::string format_time(std::string format, time_t time){
     struct tm *info;
