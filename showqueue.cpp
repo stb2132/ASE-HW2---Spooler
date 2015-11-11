@@ -10,8 +10,10 @@ void show_file(result_map::iterator it, uid_t p_runner){
     uid_t owner = sHelp.get_file_owner(it->second.string());
     sHelp.drop_priv_temp(p_runner);
 
-    std::cout << it->second.filename() << " " << owner << " " << 
-        time << " " << id << std::endl;
+    if(it->second.filename().string() != "meta"){
+        std::cout << it->second.filename() << " " << owner << " " << 
+            time << " " << id << std::endl;
+    }
 }
 
 //This gets the path/time of creation for a given directory
