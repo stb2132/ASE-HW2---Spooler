@@ -5,6 +5,9 @@
 #include <boost/version.hpp>
 #include <string>
 #include <iostream>
+#include <fstream>
+#include <sstream>
+
 #include <ctime>
 #include <map>
 #include <unistd.h>
@@ -12,6 +15,7 @@
 #include <vector>
 
 #define SPOOL "/spool"
+#define METADATA "/spool/meta"
 #define TIME_FORMAT "%Y-%m-%d_%H:%M:%S"
 #define FILE_NAME "file"
 #define FILE_ID "fileid"
@@ -27,5 +31,8 @@ class sHelper{
         int validate_file(fs::path p);
         void fill_directory_map(fs::path dir_path, result_map &map);
         int list_dir(std::string src);
+        void read_meta_file();
+	std::string get_next_id(){return std::to_string(this->id++);}
+    private:
+        int id;
 };
-
