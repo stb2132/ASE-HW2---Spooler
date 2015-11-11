@@ -2,19 +2,6 @@
 #include "addqueue.h"
 #include "queuehelper.h"
 
-int validate_file(fs::path p){
-    try{
-        if(fs::exists(p)){
-            if(fs::is_regular_file(p)){
-                return 0; 
-	    }
-	}
-    } catch (const fs::filesystem_error& ex){
-        std::cout << ex.what() << '\n';
-    }
-    return 1;
-}
-
 int main(int argc, char *argv[]){
     
     uid_t p_runner = getuid();

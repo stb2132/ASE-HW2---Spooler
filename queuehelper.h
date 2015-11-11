@@ -58,6 +58,19 @@ void fill_directory_map(fs::path dir_path, result_map &map){
         }
     }
 }
+int validate_file(fs::path p){
+    try{
+        if(fs::exists(p)){
+            if(fs::is_regular_file(p)){
+                return 0; 
+	    }
+	}
+    } catch (const fs::filesystem_error& ex){
+        std::cout << ex.what() << '\n';
+    }
+    return 1;
+}
+
 
 int list_dir(std::string src){
     result_map map;
