@@ -29,12 +29,14 @@ class sHelper{
         int drop_priv_temp(uid_t new_uid);
         int restore_priv();
         std::string format_time(std::string format, time_t time);
-        int validate_file(fs::path p);
+        bool validate_file(fs::path p);
         std::string extract_number(std::string name);
         void read_meta_file();
 	std::string get_next_id(){return std::to_string(this->id++);}
+        void decrement_id(){this->id--;}
         uid_t get_file_owner(std::string filepath);
         void write_last_id();
+       
     private:
         int id;
         uid_t p_runner;

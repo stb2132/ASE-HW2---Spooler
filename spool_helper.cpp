@@ -34,17 +34,18 @@ std::string sHelper::format_time(std::string format, time_t time){
     return buf;
 }
 
-int sHelper::validate_file(fs::path p){
+bool sHelper::validate_file(fs::path p){
     try{
         if(fs::exists(p)){
             if(fs::is_regular_file(p)){
-                return 0; 
+                return true; 
             }
         }
     } catch (const fs::filesystem_error& ex){
+        std::cout << "this ran" << std::endl;
         std::cout << ex.what() << '\n';
     }
-    return 1;
+    return false;
 }
 
 uid_t sHelper::get_file_owner(std::string filepath){
