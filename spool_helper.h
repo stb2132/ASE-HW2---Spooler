@@ -13,6 +13,7 @@
 #include <unistd.h>
 #include <errno.h>
 #include <vector>
+#include <sys/stat.h>
 
 #define SPOOL "/spool"
 #define METADATA "/spool/meta"

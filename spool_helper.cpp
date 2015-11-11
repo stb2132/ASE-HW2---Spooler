@@ -70,7 +70,9 @@ int sHelper::list_dir(std::string src){
                 fill_directory_map(p, map);
                 
                 for(result_map::iterator it = map.begin(); it != map.end(); ++it){
-                    std::cout << format_time(TIME_FORMAT, it->first) << " " << it->second << std::endl;
+                    struct stat info;
+                    stat(it->second.string().c_str(), &info);
+                    std::cout << it->second.filename() << " " << info.st_uid << " " << format_time(TIME_FORMAT, it->first) << std::endl;
                 }
 	    }
         }
