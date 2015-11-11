@@ -19,7 +19,6 @@ int sHelper::restore_priv(){
     return 0;
 }
 
-
 std::string sHelper::format_time(std::string format, time_t time){
     struct tm *info;
     info = localtime(&time);
@@ -40,61 +39,43 @@ int sHelper::validate_file(fs::path p){
         if(fs::exists(p)){
             if(fs::is_regular_file(p)){
                 return 0; 
-	    }
-	}
+            }
+        }
     } catch (const fs::filesystem_error& ex){
         std::cout << ex.what() << '\n';
     }
     return 1;
 }
 
-//This gets the path/time of creation for a given directory
-void sHelper::fill_directory_map(fs::path dir_path, result_map &map){
-    fs::directory_iterator end_iter;
-
-    for(fs::directory_iterator dir_iter(dir_path); dir_iter != end_iter ; ++dir_iter){
-        if(fs::is_regular_file(dir_iter->status()) ){
-            map.insert(result_map::value_type(fs::last_write_time(dir_iter->path()), *dir_iter)); 
-        }
-    }
+uid_t sHelper::get_file_owner(std::string filepath){
+    struct stat info;
+    stat(filepath.c_str(), &info);
+    return info.st_uid;
 }
 
-int sHelper::list_dir(std::string src){
-    result_map map;
-    fs::path p (src);
-    std::time_t last_write;
+std::string sHelper::extract_number(std::string name){
+    std::string delim = "_";
+    std::string number = name.substr(name.find_last_of(delim)+1);
+    return number;
+}
 
-    try{
-        if(exists(p)){
-            if(is_directory(p)){
-                fill_directory_map(p, map);
-                
-                for(result_map::iterator it = map.begin(); it != map.end(); ++it){
-                    struct stat info;
-                    stat(it->second.string().c_str(), &info);
-                    std::cout << it->second.filename() << " " << info.st_uid << " " << format_time(TIME_FORMAT, it->first) << std::endl;
-                }
-	    }
-        }
-    } catch(const fs::filesystem_error& ex){
-        std::cout << ex.what() << '\n';
-    }
-    return 0;
+void sHelper::write_last_id(){
+    std::string pname = METADATA;
+    std::ofstream outfile(pname);
+    outfile << this->id << std::endl; 
 }
 
 void sHelper::read_meta_file(){
-    fs::path p(METADATA);
+    std::string pname = METADATA;
+    fs::path p(pname);
     if(exists(p)){
-        std::ifstream infile(METADATA);
+        std::ifstream infile(pname);
         std::string line;
 
         std::getline(infile, line);
         //TODO: Add error checking
         this->id = atoi(line.c_str());
 
-        while(std::getline(infile, line)){
-            std::istringstream iss(line);
-        }
     } else {
         std::ofstream outfile(p.string());
         outfile << "0" << std::endl;

@@ -15,11 +15,11 @@
 #include <vector>
 #include <sys/stat.h>
 
-#define SPOOL "/spool"
-#define METADATA "/spool/meta"
+#define SPOOL "/spool/"
+#define METADATA SPOOL "meta"
 #define TIME_FORMAT "%Y-%m-%d_%H:%M:%S"
-#define FILE_NAME "file"
-#define FILE_ID "fileid"
+#define FILE_NAME "file_"
+#define FILE_ID "fileid_"
 
 namespace fs = boost::filesystem;
 typedef std::multimap<std::time_t, fs::path> result_map;
@@ -30,10 +30,12 @@ class sHelper{
         int restore_priv();
         std::string format_time(std::string format, time_t time);
         int validate_file(fs::path p);
-        void fill_directory_map(fs::path dir_path, result_map &map);
-        int list_dir(std::string src);
+        std::string extract_number(std::string name);
         void read_meta_file();
 	std::string get_next_id(){return std::to_string(this->id++);}
+        uid_t get_file_owner(std::string filepath);
+        void write_last_id();
     private:
         int id;
+        uid_t p_runner;
 };
